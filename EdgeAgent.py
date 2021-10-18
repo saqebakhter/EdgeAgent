@@ -12,8 +12,9 @@ logging.basicConfig(filename=logFile,level=logging.DEBUG)
 class MyDaemon(daemon):
     def run(self):
         while True:
-            logging.debug('This message should go to the log file')
-            time.sleep(1)
+            timestamp = int(time.time())
+            logging.debug('Edge Agent is running now ' + str(timestamp))
+            time.sleep(30)
 
 
 
