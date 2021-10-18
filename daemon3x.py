@@ -6,7 +6,7 @@ import sys, os, time, atexit, signal
 class daemon:
     """A generic daemon class.
 
-    Usage: subclass the daemon class and override the run() method."""
+    Usage: subclass the daemon class and override the run() methodd."""
 
     def __init__(self, pidfile):
         self.pidfile = pidfile
