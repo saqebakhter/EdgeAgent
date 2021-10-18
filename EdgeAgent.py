@@ -12,7 +12,7 @@ logging.basicConfig(filename=logFile,level=logging.DEBUG)
 class MyDaemon(daemon):
     def run(self):
         while True:
-            logging.debug('This message should go to the log file1')
+            logging.debug('This message should go to the log file')
             time.sleep(1)
 
 
