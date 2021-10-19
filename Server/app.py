@@ -6,7 +6,14 @@ import os
 import urllib3
 import configparser
 import time
+import subprocess
 
+from pyVmomi import vim
+from pyVim.connect import SmartConnect, Disconnect, SmartConnectNoSSL
+
+from tools import tasks
+
+from VMwareClient import VMWareClient
 
 urllib3.disable_warnings()
 
@@ -43,6 +50,9 @@ VCO_ENTERPRISE = config['DEFAULT'].getboolean('VCO_ENTERPRISE')
 
 print('=================')
 print(dir_path)
+
+
+
 
 @app.route('/')
 def listEdgeCompute():
@@ -107,10 +117,31 @@ def edgeHeartBeat():
     table = db['edgeList']
     edge = table.find_one(edgeIp=edgeIp)
     print(edge['edgeName'], edge['edgeIp'] + ' ' + 'found')
+
     timestamp = int(time.time())
     edge['lastHeartBeat'] = timestamp
+    registeredVc = edge['registeredVc']
+    print(registeredVc)
+    if not registeredVc:
+        print('Registering ' + edgeIp + ' to vc')
+        vcenter_ip = edge['vCenter']
+        vcenter_username = 'administrator@vsphere.local'
+        vcenter_password = os.environ['vcenter_password']
 
-    table = db['edgeList']
+        esxi_host_ip = edgeIp
+        esxi_host_username = 'root'
+        esxi_host_password = os.environ['esxi_host_password']
+
+        datacenter_name = 'Datacenter'
+        cluster_name = 'EdgeCluster'
+
+        vmware_client = VMWareClient(vcenter_ip, vcenter_username, vcenter_password)
+        vmware_client.add_host_to_vc(esxi_host_ip, esxi_host_username, esxi_host_password, datacenter_name,
+                                     cluster_name)
+
+        edge['registeredVc'] = True
+        table.upsert(edge, ['edgeName', 'edgeIp'])
+
     table.upsert(edge, ['edgeName', 'edgeIp'])
 
     return 'Done'
