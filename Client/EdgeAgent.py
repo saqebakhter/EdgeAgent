@@ -5,21 +5,22 @@ from daemon3x import daemon
 import subprocess
 from urllib import request, parse
 import json
+import traceback
+
 
 logFile = '/tmp/EdgeAgent.log'
-EdgeRegistrar = 'http://mockbin.org/bin/c890afbc-2e85-4c89-92ab-e606ce9e8f33'
+EdgeRegistrar = 'http://192.168.20.71/edge/heartbeat'
 logging.basicConfig(filename=logFile,level=logging.DEBUG)
 
 
 class MyDaemon(daemon):
     def getVMKIp(self):
-        logging.debug('get vmkip')
         process = subprocess.Popen(['/bin/esxcli --debug --formatter=json network ip interface ipv4 get'],
                                    shell=True,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
-        logging.debug(stdout)
+        # logging.debug(stdout)
         parsedList = json.loads(stdout)
         for interface in parsedList:
             if interface['Name'] == 'vmk0':
@@ -27,16 +28,24 @@ class MyDaemon(daemon):
 
     def run(self):
         while True:
-            timestamp = int(time.time())
-            vmk0Ip = self.getVMKIp()
-            logging.debug('Edge Agent is running now ' + str(timestamp) + ' : ' + vmk0Ip)
-            payload = {'ipAddress': vmk0Ip}
-            encoded_data = json.dumps(payload).encode('utf-8')
+            try:
+                timestamp = int(time.time())
+                vmk0Ip = self.getVMKIp()
+                logging.debug('Edge Agent is running now ' + str(timestamp) + ' : ' + vmk0Ip)
+                payload = {'ipAddress': vmk0Ip}
+                encoded_data = json.dumps(payload).encode('utf-8')
 
-            req = request.Request(EdgeRegistrar, data=encoded_data)
-            resp = request.urlopen(req)
+                req = request.Request(EdgeRegistrar, data=encoded_data)
+                req.add_header('Content-Type', 'application/json')
 
-            time.sleep(30)
+                resp = request.urlopen(req)
+                ''
+            except Exception as e:
+                logging.error('exception hit')
+                logging.error(e, exc_info=True)
+
+
+            time.sleep(5)
 
 
 

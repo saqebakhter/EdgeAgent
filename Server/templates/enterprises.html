@@ -1,0 +1,36 @@
+{% extends "header.html" %}
+{% set headerTitle = '[VCO ConfigBackup]' %}
+
+{% block body %}
+
+<!doctype html>
+<title>Edge List</title>
+<div class=page>
+  <h2>Edge List</h2>
+
+
+<table class="table">
+<tbody>
+<tr>
+<td>Edge Name</td>
+<td>IP</td>
+<td>vCenter</td>
+<td>Heart Beat TS</td>
+
+</tr>
+
+  {% for edge in table %}
+
+<tr>
+<td><a href="/edge/{{edge['edgeName']}}"> {{edge['edgeName']}} </a></td>
+<td>{{edge['edgeIp']}}</td>
+<td>{{edge['vCenter']}}</td>
+<td>{{edge['lastHeartBeat']}}</td>
+
+</tr>
+  {% endfor %}
+</tbody>
+</table>
+
+</div>
+{% endblock %}
