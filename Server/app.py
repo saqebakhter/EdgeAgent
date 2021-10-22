@@ -63,7 +63,7 @@ def listEdgeCompute():
     table = db['edgeList']
     edges = table.all()
 
-    return render_template('enterprises.html', table=edges)
+    return render_template('edges.html', table=edges)
 
 
 @app.route('/getVIB')
@@ -71,7 +71,6 @@ def listEdgeCompute():
 def returnVIB():
     return send_file('edgeagent-offline-bundle.zip')
 
-@app.route('/enterprise/<int:enterpriseId>')
 
 @app.route('/edge/heartbeat', methods=[ 'POST'])
 def edgeHeartBeat():
@@ -112,7 +111,6 @@ def edgeHeartBeat():
     else:
         print(edgeIp + ' edge not found in db')
     return 'Done'
-    # return render_template('profileBackups.html', profileName=profile['profileName'], enterprise=enterprise, backups=list(backups), modules=modules, enterpriseId=enterpriseId, profileId=profileId)
 
 
 
