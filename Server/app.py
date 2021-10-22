@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect,url_for
 from flask_assets import Bundle, Environment
+from flask import send_file
 
 import dataset
 import os
@@ -65,6 +66,11 @@ def listEdgeCompute():
     return render_template('enterprises.html', table=edges)
 
 
+@app.route('/getVIB')
+
+def returnVIB():
+    return send_file('edgeagent-offline-bundle.zip')
+
 @app.route('/enterprise/<int:enterpriseId>')
 
 def listEdges(enterpriseId):
@@ -116,34 +122,36 @@ def edgeHeartBeat():
     edgeIp = data['ipAddress']
     table = db['edgeList']
     edge = table.find_one(edgeIp=edgeIp)
-    print(edge['edgeName'], edge['edgeIp'] + ' ' + 'found')
+    if edge:
+        print(edge['edgeName'], edge['edgeIp'] + ' ' + 'found')
 
-    timestamp = int(time.time())
-    edge['lastHeartBeat'] = timestamp
-    registeredVc = edge['registeredVc']
-    print(registeredVc)
-    if not registeredVc:
-        print('Registering ' + edgeIp + ' to vc')
-        vcenter_ip = edge['vCenter']
-        vcenter_username = 'administrator@vsphere.local'
-        vcenter_password = os.environ['vcenter_password']
+        timestamp = int(time.time())
+        edge['lastHeartBeat'] = timestamp
+        registeredVc = edge['registeredVc']
+        print(registeredVc)
+        if not registeredVc:
+            print('Registering ' + edgeIp + ' to vc')
+            vcenter_ip = edge['vCenter']
+            vcenter_username = 'administrator@vsphere.local'
+            vcenter_password = os.environ['vcenter_password']
 
-        esxi_host_ip = edgeIp
-        esxi_host_username = 'root'
-        esxi_host_password = os.environ['esxi_host_password']
+            esxi_host_ip = edgeIp
+            esxi_host_username = 'root'
+            esxi_host_password = os.environ['esxi_host_password']
 
-        datacenter_name = 'Datacenter'
-        cluster_name = 'EdgeCluster'
+            datacenter_name = 'Datacenter'
+            cluster_name = 'EdgeCluster'
 
-        vmware_client = VMWareClient(vcenter_ip, vcenter_username, vcenter_password)
-        vmware_client.add_host_to_vc(esxi_host_ip, esxi_host_username, esxi_host_password, datacenter_name,
-                                     cluster_name)
+            vmware_client = VMWareClient(vcenter_ip, vcenter_username, vcenter_password)
+            vmware_client.add_host_to_vc(esxi_host_ip, esxi_host_username, esxi_host_password, datacenter_name,
+                                         cluster_name)
 
-        edge['registeredVc'] = True
+            edge['registeredVc'] = True
+            table.upsert(edge, ['edgeName', 'edgeIp'])
+
         table.upsert(edge, ['edgeName', 'edgeIp'])
-
-    table.upsert(edge, ['edgeName', 'edgeIp'])
-
+    else:
+        print(edgeIp + ' edge not found in db')
     return 'Done'
     # return render_template('profileBackups.html', profileName=profile['profileName'], enterprise=enterprise, backups=list(backups), modules=modules, enterpriseId=enterpriseId, profileId=profileId)
 

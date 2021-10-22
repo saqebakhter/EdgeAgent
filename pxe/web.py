@@ -6,6 +6,7 @@ from getmac import get_mac_address
 hostName = "0.0.0.0"
 serverPort = 8090
 
+
 class db_dict():
     def __init__(self):
         self.db = {
@@ -18,13 +19,24 @@ class db_dict():
                 "dns": ["10.115.37.201", "10.20.145.1", "10.33.4.1"],
                 "hostname": "nested-esxi5",
                 "license": ""
+            },
+            "00:50:56:ba:97:21": {
+                "bootproto": "static",
+                "bootdevice": "vmnic0",
+                "ipaddr": "192.168.20.200",
+                "netmask": "255.255.255.0",
+                "gateway": "192.168.20.1",
+                "dns": ["192.168.20.70"],
+                "hostname": "nested-esxi-saqeb",
+                "license": ""
             }
         }
-    
+
     def lookup(self, mac):
         if mac not in self.db:
             return self.db["00:11:22:33:44:55"]
         return self.db[mac]
+
 
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -51,7 +63,7 @@ class MyServer(BaseHTTPRequestHandler):
         db = db_dict()
         db_out = db.lookup(client_mac)
         print(client_addr)
-        print(client_mac) 
+        print(client_mac)
         if db_out is None:
             # To-do, probably return 404 Not Found
             pass
@@ -60,7 +72,8 @@ class MyServer(BaseHTTPRequestHandler):
         # Build the network config line based on the address type
         network_config = "network --bootproto={bootproto} --device={bootdevice}".format(**db_out)
         if db_out["bootproto"] == "static":
-            network_config += " --ip={ipaddr} --netmask={netmask} --gateway={gateway} --nameserver={dns1} --hostname={hostname} --addvmportgroup=0".format(**db_out)
+            network_config += " --ip={ipaddr} --netmask={netmask} --gateway={gateway} --nameserver={dns1} --hostname={hostname} --addvmportgroup=0".format(
+                **db_out)
 
         # Build the additional network config needed as part of firstboot
         post_network_config = ""
@@ -91,12 +104,16 @@ class MyServer(BaseHTTPRequestHandler):
             %firstboot --interpreter=busybox 
             esxcli system maintenanceMode set -e true
             esxcli system settings advanced set -o /UserVars/SuppressShellWarning -i 1
+            esxcli software acceptance set --level CommunitySupported
+            wget 'http://192.168.20.71/getVIB' -O /tmp/edgeagent.zip
+            esxcli software vib install -d /tmp/edgeagent.zip -f
             vim-cmd hostsvc/enable_ssh
             vim-cmd hostsvc/start_ssh
         ''' + "\n" + post_network_config + "\n"
         return ks
 
-if __name__ == "__main__":        
+
+if __name__ == "__main__":
     webServer = HTTPServer((hostName, serverPort), MyServer)
     print("Server started http://%s:%s" % (hostName, serverPort))
 
