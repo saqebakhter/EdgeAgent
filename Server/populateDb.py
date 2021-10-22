@@ -19,6 +19,7 @@ for edge in rangeNum:
     edgeDict['edgeName'] = edgeName
     edgeDict['edgeIp'] = edgeIp
     edgeDict['vCenter'] = '192.168.20.59'
+    edgeDict['clusterName'] = 'Edge-1'
     edgeDict['lastHeartBeat'] = 0
     edgeDict['registeredVc'] = False
 
@@ -27,6 +28,7 @@ for edge in rangeNum:
 for edge in edgeList:
     print(edge)
 
-    table.upsert(dict(edgeName=edge['edgeName'], edgeIp=edge['edgeIp'], vCenter=edge['vCenter'] , lastHeartBeat=edge['lastHeartBeat'],
+    table.upsert(dict(edgeName=edge['edgeName'], edgeIp=edge['edgeIp'], clusterName=edge['clusterName'],
+                      vCenter=edge['vCenter'] , lastHeartBeat=edge['lastHeartBeat'],
                       registeredVc=edge['registeredVc']), ['edgeName', 'edgeIp'])
 

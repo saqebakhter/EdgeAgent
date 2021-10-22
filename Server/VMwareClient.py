@@ -2,6 +2,7 @@ import subprocess
 from pyVmomi import vim
 from pyVim.connect import SmartConnect, Disconnect, SmartConnectNoSSL
 import atexit
+import os
 
 from tools import tasks
 
@@ -34,14 +35,23 @@ class VMWareClient:
 
     def find_cluster(self, name):
 
+        cluster_obj = None
         for cluster_obj in self.get_obj(self._content, vim.ComputeResource, name):
-            print(cluster_obj.name)
             if cluster_obj.name == name:
                 return cluster_obj
 
 
     def find_datacenter(self, name):
-        print('implement')
+        # A list comprehension of all the root folder's first tier children...
+        datacenters = [entity for entity in self._content.rootFolder.childEntity
+                       if hasattr(entity, 'vmFolder')]
+
+        dcVal = None
+        for dc in datacenters:
+            if dc.name == name:
+                dcVal = dc
+                return dcVal
+
 
     def create_datacenter(self, name):
         folder = self._content.rootFolder
@@ -59,7 +69,29 @@ class VMWareClient:
         host_connect_spec.password = host_password
         host_connect_spec.force = True
         host_connect_spec.sslThumbprint = get_ssl_thumbprint(host_ip)
-        datacenter = datacenter_name
+        datacenter = self.find_datacenter(datacenter_name)
         cluster = self.find_cluster(cluster_name)
+        if not cluster:
+            cluster = self.create_cluster(cluster_name, datacenter)
+
         add_host_task = cluster.AddHost(spec=host_connect_spec, asConnected=True)
         tasks.wait_for_tasks(self._service_instance, [add_host_task])
+
+
+
+if __name__ == '__main__':
+    vcenter_ip = os.environ['vCenter']
+    vcenter_username = 'administrator@vsphere.local'
+    vcenter_password = os.environ['vcenter_password']
+
+    datacenter_name = 'Datacenter'
+    cluster_name = 'EdgeCluster-2'
+
+    vmware_client = VMWareClient(vcenter_ip, vcenter_username, vcenter_password)
+    datacenter = vmware_client.find_datacenter('Datacenter')
+    # A list comprehension of all the root folder's first tier children...
+
+
+    cluster = vmware_client.find_cluster('Edge-1')
+    if not cluster:
+        vmware_client.create_cluster(cluster_name, datacenter)

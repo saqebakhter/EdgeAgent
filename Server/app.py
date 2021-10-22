@@ -73,47 +73,6 @@ def returnVIB():
 
 @app.route('/enterprise/<int:enterpriseId>')
 
-def listEdges(enterpriseId):
-
-    if VCO_ENTERPRISE:
-        resp = vcoClient.call_api("enterprise/getEnterpriseEdgeList",{})
-
-    else:
-        resp = vcoClient.call_api("enterprise/getEnterpriseEdgeList", {
-            "enterpriseId": enterpriseId,
-        })
-
-
-
-    table = db['edgeList']
-    for edge in resp:
-        table.upsert(dict(enterpriseId=enterpriseId, edgeId=edge['id'], edgeName=edge['name']), ['enterpriseId', 'edgeId'])
-
-
-    if VCO_ENTERPRISE:
-        profileResp = vcoClient.call_api("enterprise/getEnterpriseConfigurationsPolicies", {})
-
-    else:
-        profileResp = vcoClient.call_api("enterprise/getEnterpriseConfigurationsPolicies", {
-            "enterpriseId": enterpriseId,
-        })
-
-
-    table = db['profileList']
-    for profile in profileResp:
-        table.upsert(dict(enterpriseId=enterpriseId, profileId=profile['id'], profileName=profile['name']), ['enterpriseId', 'profileId'])
-
-    table = db['enterpriseList']
-    enterprise = table.find_one(enterpriseId=enterpriseId)
-
-    if enterprise == None:
-        enterprise = {}
-        enterprise['name'] = 'Enterprise'
-
-    return render_template('edges.html', profiles=profileResp, enterpriseId=enterpriseId, table=resp, enterprise=enterprise)
-
-
-
 @app.route('/edge/heartbeat', methods=[ 'POST'])
 def edgeHeartBeat():
     db = dataset.connect('sqlite:///' + dir_path + '/database.db')
@@ -140,7 +99,7 @@ def edgeHeartBeat():
             esxi_host_password = os.environ['esxi_host_password']
 
             datacenter_name = 'Datacenter'
-            cluster_name = 'EdgeCluster'
+            cluster_name =  edge['clusterName']
 
             vmware_client = VMWareClient(vcenter_ip, vcenter_username, vcenter_password)
             vmware_client.add_host_to_vc(esxi_host_ip, esxi_host_username, esxi_host_password, datacenter_name,

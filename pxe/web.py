@@ -27,9 +27,40 @@ class db_dict():
                 "netmask": "255.255.255.0",
                 "gateway": "192.168.20.1",
                 "dns": ["192.168.20.70"],
-                "hostname": "nested-esxi-saqeb",
+                "hostname": "esxi-1a",
                 "license": ""
-            }
+            },
+            "00:50:56:ba:97:22": {
+                "bootproto": "static",
+                "bootdevice": "vmnic0",
+                "ipaddr": "192.168.20.201",
+                "netmask": "255.255.255.0",
+                "gateway": "192.168.20.1",
+                "dns": ["192.168.20.70"],
+                "hostname": "esxi-1b",
+                "license": ""
+            },
+            "00:50:56:ba:97:23": {
+                "bootproto": "static",
+                "bootdevice": "vmnic0",
+                "ipaddr": "192.168.20.202",
+                "netmask": "255.255.255.0",
+                "gateway": "192.168.20.1",
+                "dns": ["192.168.20.70"],
+                "hostname": "esxi-2a",
+                "license": ""
+            },
+            "00:50:56:ba:97:24": {
+                "bootproto": "static",
+                "bootdevice": "vmnic0",
+                "ipaddr": "192.168.20.203",
+                "netmask": "255.255.255.0",
+                "gateway": "192.168.20.1",
+                "dns": ["192.168.20.70"],
+                "hostname": "esxi-2b",
+                "license": ""
+            },
+
         }
 
     def lookup(self, mac):
