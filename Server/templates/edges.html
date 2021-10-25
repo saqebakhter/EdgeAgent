@@ -27,8 +27,12 @@
 <td>{{edge['edgeIp']}}</td>
 <td>{{edge['vCenter']}}</td>
 <td>{{edge['clusterName']}}</td>
+{% if edge['lastHeartBeat'] == 0 %}
+  <td>Staged</td>
+  {% else %}
+  <td>{{edge['lastHeartBeat']}}</td>
 
-<td>{{edge['lastHeartBeat']}}</td>
+{% endif %}
 
 </tr>
   {% endfor %}
