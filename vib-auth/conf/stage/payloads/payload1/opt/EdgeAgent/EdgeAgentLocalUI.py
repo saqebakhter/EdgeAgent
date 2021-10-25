@@ -78,7 +78,7 @@ def update():
     netmask = request.forms.get('netmask')
     gateway = request.forms.get('gateway')
 
-    cmd = 'network ip interface ipv4 set --interface-name=vmk2 --ipv4={ip} --netmask={netmask} --gateway={gateway} --type=static'.format(ip=ip, netmask=netmask, gateway=gateway)
+    cmd = 'network ip interface ipv4 set --interface-name=vmk0 --ipv4={ip} --netmask={netmask} --gateway={gateway} --type=static'.format(ip=ip, netmask=netmask, gateway=gateway)
     print(cmd)
     process = subprocess.Popen(['/bin/esxcli --debug --formatter=json '+cmd],
                                shell=True,
