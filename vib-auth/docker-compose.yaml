@@ -1,0 +1,13 @@
+version: '2'
+services:
+
+    vib-auth:
+       image: lamw/vibauthor
+       container_name: vib-auth
+       hostname: vib-auth
+       stdin_open: true
+       tty: true
+       command: /bin/bash
+       volumes:
+        - "./conf:/root/conf"
+       network_mode: "bridge"

@@ -1,0 +1,16 @@
+<ConfigRoot>
+<service id='0100'>
+ <id>EdgeAgentLocalUI</id>
+  <rule id='0000'>
+   <direction>inbound</direction>
+   <protocol>tcp</protocol>
+   <porttype>dst</porttype>
+    <port>
+     <begin>8080</begin>
+     <end>8080</end>
+    </port>
+  </rule>
+ <enabled>true</enabled>
+ <required>false</required>
+</service>
+</ConfigRoot>
