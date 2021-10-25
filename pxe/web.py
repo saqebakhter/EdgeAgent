@@ -135,11 +135,13 @@ class MyServer(BaseHTTPRequestHandler):
             %firstboot --interpreter=busybox 
             esxcli system maintenanceMode set -e true
             esxcli system settings advanced set -o /UserVars/SuppressShellWarning -i 1
+            vim-cmd hostsvc/enable_ssh
+            vim-cmd hostsvc/start_ssh
+            
             esxcli software acceptance set --level CommunitySupported
             wget 'http://192.168.20.71/getVIB' -O /tmp/edgeagent.zip
             esxcli software vib install -d /tmp/edgeagent.zip -f
-            vim-cmd hostsvc/enable_ssh
-            vim-cmd hostsvc/start_ssh
+
         ''' + "\n" + post_network_config + "\n"
         return ks
 
