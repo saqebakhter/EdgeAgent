@@ -37,7 +37,7 @@ def createLocalNet():
     stdout, stderr = process.communicate()
 
 
-    process = subprocess.Popen(['/bin/esxcli --debug --formatter=json esxcli network ip interface add --interface-name=vmk2 --portgroup-name=local-ui'],
+    process = subprocess.Popen(['/bin/esxcli --debug --formatter=json network ip interface add --interface-name=vmk2 --portgroup-name=local-ui'],
                                shell=True,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
