@@ -40,11 +40,6 @@ config.sections()
 
 config.read('config.ini')
 
-VCO_FQDN = config['DEFAULT']['VCO_FQDN']
-VCO_USERNAME = config['DEFAULT']['VCO_USERNAME']
-VCO_PASSWORD = config['DEFAULT']['VCO_PASSWORD']
-VCO_ENTERPRISE = config['DEFAULT'].getboolean('VCO_ENTERPRISE')
-
 
 
 # db = dataset.connect('sqlite:///tmp/database.db')
@@ -58,8 +53,17 @@ print(dir_path)
 @app.route('/')
 def getIndex():
 
-    edges = []
-    return render_template('edges.html', table=edges)
+    data = {}
+    data['currentVMK0'] = '192.168.20.1'
+    return render_template('networking.html', table=data)
+
+@app.route('/sdwan')
+def getSDWANIndex():
+
+    data = {}
+    data['currentStatus'] = 'Not Deployed'
+    return render_template('sdwan.html', table=data)
+
 
 
 

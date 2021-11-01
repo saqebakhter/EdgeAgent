@@ -1,10 +1,10 @@
 <vib version="5.0">
 <type>bootbank</type>
-<name>custom-firewall</name>
-<version>5.0.0-6.5.0</version>
- <vendor>Home</vendor>
- <summary>Add Custom Firewall Rules</summary>
- <description>Adds outbound ports</description>
+<name>edge-agent</name>
+<version>1.0.0-0.0.0</version>
+ <vendor>SaqebAkhter</vendor>
+ <summary>EdgeAgent</summary>
+ <description>EdgeAgent</description>
  <relationships>
   <depends></depends>
   <conflicts/>

@@ -1,0 +1,25 @@
+{% extends "header.html" %}
+{% set headerTitle = 'EdgeAgent LocalUI - Network' %}
+
+{% block body %}
+
+<!doctype html>
+<title>N</title>
+<div class=page>
+  <h2>Networking Configuration</h2>
+
+  <br>
+Current VMK0 IP : {{table['currentVMK0']}}
+
+  <form action="/update" method="post">
+    New IP: <input name="ip" type="text" />
+    Netmask: <input name="netmask" type="text" />
+    Gateway: <input name="gateway" type="text" />
+
+    <input value="update" type="submit" />
+</form>
+
+
+
+</div>
+{% endblock %}

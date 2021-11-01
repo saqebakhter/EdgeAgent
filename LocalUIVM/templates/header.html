@@ -22,10 +22,12 @@
 
     <div class="branding">
         <clr-icon shape="vm"></clr-icon>
-        <span class="title">Edge Registrar</span>
+        <span class="title">EdgeAgent Local UI</span>
     </div>
     <div class="header-nav">
-            <a href="/" class="nav-link nav-text">Home</a>
+            <a href="/" class="nav-link nav-text">Networking</a>
+            <a href="/sdwan" class="nav-link nav-text">SD-WAN</a>
+
         {% if enterprise %}
              <a href="/enterprise/{{enterprise['id']}}" class="nav-link nav-text">{{enterprise['name']}}</a>
         {% endif %}

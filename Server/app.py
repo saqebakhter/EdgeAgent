@@ -63,7 +63,7 @@ def listEdgeCompute():
     table = db['edgeList']
     edges = table.all()
 
-    return render_template('edges.html', table=edges)
+    return render_template('networking.html', table=edges)
 
 
 @app.route('/getVIB')

@@ -2,3 +2,6 @@
 /Server/database.db-shm
 /Server/database.db-wal
 /Server/config.ini
+/vib-auth/conf/edageagent.vib
+/vib-auth/conf/edgeagent.vib
+/vib-auth/conf/edgeagent-offline-bundle.zip

@@ -1,0 +1,24 @@
+{% extends "header.html" %}
+{% set headerTitle = 'EdgeAgent LocalUI - SDWAN' %}
+
+{% block body %}
+
+<!doctype html>
+<title>N</title>
+<div class=page>
+  <h2>SDWAN Configuration</h2>
+
+  <br>
+Current Status : {{table['currentStatus']}}
+
+  <form action="/sdwan-provision" method="post">
+    VCO FQDN: <input name="vcoFqdn" type="text" />
+    Activation Key: <input name="activationKey" type="text" />
+
+    <input value="Deploy" type="submit" />
+</form>
+
+
+
+</div>
+{% endblock %}
